@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 
 const router = express.Router();
 
+
 // Route to create a user
 router.post('/createuser', [
     body('email', 'Enter a Valid Email').isEmail(),
