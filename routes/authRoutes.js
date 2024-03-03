@@ -11,6 +11,7 @@ router.post('/createuser', [
     body('name', "Enter a Valid Name").isLength({ min: 3 }),
     body('password', 'Password must be at least 5 characters long').isLength({ min: 5 }),
 ], authController.createuser);
+router.post('/verify-otp',authController.getuserotp);
 
 // Route for user login
 router.post('/login', [
