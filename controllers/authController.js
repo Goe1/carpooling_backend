@@ -9,6 +9,10 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const JWT_SECRET = "kalprateek@2692";
+let globalOTP = null; // Declare a global variable to store OTP
+let globalemail = null;
+let globalpassword = null;
+let globalusername = null;
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -34,43 +38,60 @@ const createuser = async (req, res) => {
     if (user) {
       return res.status(400).json({ success, msg: 'User already exists' });
     }
-    // otp generated
-    const otp = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
+    globalOTP = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false }); // Set the global OTP
+
+    // Generate OTP
     const mailOptions = {
       from: "prateeksrivastava702@gmail.com",
-      to: req.body.email, // Use the provided email address
+      to: req.body.email,
       subject: "Your OTP for Registration",
-      text: `Your OTP for registration is: ${otp}`,
+      text: `Your OTP for registration is: ${globalOTP}`,
     };
-    // otp send
+    // Send OTP via email
     transporter.sendMail(mailOptions, async (error, info) => {
       if (error) {
         console.log("Error sending email:", error);
         return res.status(500).send("Error sending OTP via email");
       } else {
         console.log("Email sent: " + info.response);
-        // Proceed with user creation
+        globalemail = req.body.email,
+        globalusername= req.body.name;
         const salt = await bcrypt.genSalt(10);
+        // console.log("aa gya andar");
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        await User.create({
-          username: req.body.name,
-          email: req.body.email,
-          password: hashedPassword
-        });
-        const data = {
-          user: {
-            id: User._id,
-          }
-        };
-        const authToken = jwt.sign(data, JWT_SECRET);
-        success = true;
-        res.json({ success, authToken });
+        globalpassword=hashedPassword;
+
       }
     });
   } catch (error) {
     console.log("Error creating user:", error);
     res.status(500).send("Error Occurred");
   }
+};
+
+// Function to get user OTP
+const getuserotp = async (req, res) => {
+  // console.log(req.body.otp,globalOTP);
+  const userotp = req.body.otp;
+  if (userotp === globalOTP) { // Compare with global OTP
+    // const salt = await bcrypt.genSalt(10);
+    // console.log("aa gya andar");
+    // const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await User.create({
+      username: globalusername,
+      email: globalemail,
+      password: globalpassword
+    });
+    const data = {
+      user: {
+        id: User._id,
+      }
+    };
+    const authToken = jwt.sign(data, JWT_SECRET);
+    success = true;
+    res.json({ success, authToken });
+  }
+
 };
 
 // Function for user login
@@ -104,4 +125,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { createuser, login };
+module.exports = { createuser, login, getuserotp };
