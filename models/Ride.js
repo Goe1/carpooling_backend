@@ -1,10 +1,9 @@
-// Assuming you have a 'mongoose' instance set up
+// models/Ride.js
 const mongoose = require('mongoose');
 
-// Define the Ride schema
 const rideSchema = new mongoose.Schema({
   driver: {
-    type: String, // Assuming storing the driver's email as a string
+    type: String, // Assuming email is used as a unique identifier for the driver
     required: true,
   },
   startingLocation: {
@@ -22,12 +21,24 @@ const rideSchema = new mongoose.Schema({
   availableSeats: {
     type: Number,
     required: true,
-    min: 1, // Assuming there should be at least one available seat
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  applicants: [
+    {
+      type: String, // Assuming email is used as a unique identifier for applicants
+    },
+  ],
+  departureTime: { 
+    type: String, required: true
+   },
+  estimatedArrivalTime: { 
+    type: String, required: true 
   },
 });
 
-// Create the Ride model
 const Ride = mongoose.model('Ride', rideSchema);
 
-// Export the model
 module.exports = Ride;
