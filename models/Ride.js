@@ -1,4 +1,3 @@
-// models/Ride.js
 const mongoose = require('mongoose');
 
 const rideSchema = new mongoose.Schema({
@@ -24,7 +23,6 @@ const rideSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    
   },
   applicants: [
     {
@@ -32,11 +30,18 @@ const rideSchema = new mongoose.Schema({
     },
   ],
   departureTime: { 
-    type: String, required: true
-   },
-  estimatedArrivalTime: { 
-    type: String, required: true 
+    type: String, 
+    required: true 
   },
+  estimatedArrivalTime: { 
+    type: String, 
+    required: true 
+  },
+  // Add field for PDF document
+  document: {
+    data: Buffer,
+    contentType: String,
+  }
 });
 
 const Ride = mongoose.model('Ride', rideSchema);

@@ -4,7 +4,9 @@ const Ride = require('../models/Ride');
 
 const create = async (req, res) => {
     try {
-        const { startingLocation, destination, date, availableSeats, userEmail,starttime,endtime,name } = req.body;
+        const { startingLocation, destination, date, availableSeats, userEmail,starttime,endtime,name,formDataWithLicense } = req.body;
+        console.log(formDataWithLicense);
+        console.log("license");
 
         const ride = new Ride({
             driver: userEmail,
@@ -15,7 +17,7 @@ const create = async (req, res) => {
             applicants:name,
             departureTime:endtime,
             estimatedArrivalTime:starttime,
-
+            document:formDataWithLicense
         });
         // console.log('karre hai save')
 
