@@ -9,15 +9,6 @@ router.post('/create', async (req, res) => {
   try {
     const { startingLocation, destination, date, availableSeats,userEmail,price,departureTime, estimatedArrivalTime } = req.body;
 
-    // User email from authMiddleware
-
-    if(userEmail === undefined)
-    {
-      res.status(500).json({ message: 'login kar pahle' });
-    }
-
-    console.log(userEmail)
-    
     const ride = new Ride({
       driver: userEmail,
       startingLocation,
