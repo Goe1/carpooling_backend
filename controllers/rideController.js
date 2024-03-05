@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router();
+// const router = express.Router();
 const Ride = require('../models/Ride');
 
 const create = async (req, res) => {
     try {
-        const { startingLocation, destination, date, availableSeats, userEmail } = req.body;
+        const { startingLocation, destination, date, availableSeats, userEmail,starttime,endtime,name } = req.body;
 
         const ride = new Ride({
             driver: userEmail,
@@ -12,8 +12,12 @@ const create = async (req, res) => {
             destination,
             date,
             availableSeats,
+            applicants:name,
+            departureTime:endtime,
+            estimatedArrivalTime:starttime,
+
         });
-        console.log('karre hai save')
+        // console.log('karre hai save')
 
         await ride.save();
         res.json({ message: 'Ride created successfully', ride });
