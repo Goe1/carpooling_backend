@@ -38,7 +38,7 @@ const createuser = async (req, res) => {
     if (user) {
       return res.status(400).json({ success, msg: 'User already exists' });
     }
-    globalOTP = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false }); // Set the global OTP
+    globalOTP = otpGenerator.generate(6, { digits: true, alphabets: true, upperCase: false, specialChars: false }); // Set the global OTP
 
     // Generate OTP
     const mailOptions = {
