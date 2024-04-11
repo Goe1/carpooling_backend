@@ -38,9 +38,8 @@ const rideSchema = new mongoose.Schema({
     required: true 
   },
   // Add field for PDF document
-  document: {
-    filename: String,
-    data: Buffer
+  license: {
+    type:String
   }
 });
 
