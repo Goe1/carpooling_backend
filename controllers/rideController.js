@@ -5,7 +5,8 @@ const User=require('../models/User');
 
 const create = async (req, res) => {
     try {
-        const { startingLocation, destination, date, availableSeats, userEmail,starttime,endtime,name} = req.body;
+        const { startingLocation, destination, date, availableSeats, userEmail,license,starttime,endtime,name} = req.body;
+        console.log(req.body);
         //const { formDataWithLicense } = req.files;
         //console.log(formDataWithLicense);
         console.log("license");
@@ -19,13 +20,9 @@ const create = async (req, res) => {
             applicants:name,
             departureTime:endtime,
             estimatedArrivalTime:starttime,
-            // document: { // Assuming 'document' is a field in your Ride model to store the uploaded file
-            //     data: formDataWithLicense.data, // Accessing the file data
-            //     contentType: formDataWithLicense.mimetype // Accessing the file content type
-            // }
+            license:license
         });
         // console.log('karre hai save')
-
         await ride.save();
         res.json({ message: 'Ride created successfully', ride });
     } catch (error) {

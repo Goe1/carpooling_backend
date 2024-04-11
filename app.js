@@ -21,14 +21,14 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
   useUnifiedTopology: true,
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Set the destination directory for uploaded files
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); // Set the file name
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/'); // Set the destination directory for uploaded files
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + '-' + file.originalname); // Set the file name
+//   }
+// });
 
 // const upload = multer({ storage: storage });
 // app.use(upload.single('formDataWithLicense'));
