@@ -19,5 +19,11 @@ router.post('/login', [
     body('password', 'Password cannot be blank').exists(),
 ], authController.login);
 
+// // Route for user login
+// router.get('/users', [
+//     body('email', 'Enter a Valid Email').isEmail(),
+//     body('password', 'Password cannot be blank').exists(),
+// ], authController.login);
+
 router.get('/getuser', fetchuser,authController.getuser);
 module.exports = router;

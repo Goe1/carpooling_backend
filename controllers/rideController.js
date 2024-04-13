@@ -5,8 +5,10 @@ const User=require('../models/User');
 
 const create = async (req, res) => {
     try {
-        const { startingLocation, destination, date, availableSeats, userEmail,starttime,endtime,name,formDataWithLicense } = req.body;
-        console.log(formDataWithLicense);
+        const { startingLocation, destination, date, availableSeats, userEmail,license,starttime,endtime,name} = req.body;
+        console.log(req.body);
+        //const { formDataWithLicense } = req.files;
+        //console.log(formDataWithLicense);
         console.log("license");
 
         const ride = new Ride({
@@ -18,10 +20,9 @@ const create = async (req, res) => {
             applicants:name,
             departureTime:endtime,
             estimatedArrivalTime:starttime,
-            document:formDataWithLicense
+            license:license
         });
         // console.log('karre hai save')
-
         await ride.save();
         res.json({ message: 'Ride created successfully', ride });
     } catch (error) {

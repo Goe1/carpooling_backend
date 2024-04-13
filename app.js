@@ -1,6 +1,7 @@
 // server.js (or app.js)
 const express = require('express');
 const mongoose = require('mongoose');
+const multer = require('multer');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
@@ -20,6 +21,49 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
   useUnifiedTopology: true,
 });
 
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, 'uploads/'); // Set the destination directory for uploaded files
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + '-' + file.originalname); // Set the file name
+//   }
+// });
+
+// const upload = multer({ storage: storage });
+// app.use(upload.single('formDataWithLicense'));
+// app.post('/rides/create', upload.single('formDataWithLicense'), async(req, res) => {
+//   try {
+//     const { startingLocation, destination, date, availableSeats, userEmail,starttime,endtime,name} = req.body;
+//     const { formDataWithLicense } = req.file;
+//     console.log(formDataWithLicense);
+//     console.log("license");
+
+//     const ride = new Ride({
+//         driver: userEmail,
+//         startingLocation,
+//         destination,
+//         date,
+//         availableSeats,
+//         applicants:name,
+//         departureTime:endtime,
+//         estimatedArrivalTime:starttime,
+//         document: { // Assuming 'document' is a field in your Ride model to store the uploaded file
+//             data: formDataWithLicense.data, // Accessing the file data
+//             contentType: formDataWithLicense.mimetype // Accessing the file content type
+//         }
+//     });
+//     // console.log('karre hai save')
+
+//     await ride.save();
+//     console.log("ok");
+//     res.json({ message: 'Ride created successfully', ride });
+// } catch (error) {
+//     console.error('Error creating ride:', error);
+//     res.status(500).json({ message: 'Internal Server Error' });
+// }
+  
+// });
 app.use('/auth', authRoutes);
 app.use('/rides', rideRoutes); // Use rideRoutes for '/rides' endpoint
 
