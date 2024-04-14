@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
+// const Cors=require('cors');
+
 const authRoutes = require('./routes/authRoutes');
 const rideRoutes = require('./routes/rideRoutes'); // Import rideRoutes
 
