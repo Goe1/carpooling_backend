@@ -2,6 +2,7 @@ const express = require('express');
 // const router = express.Router();
 const Ride = require('../models/Ride');
 const User=require('../models/User');
+const mongoose=require('mongoose');
 
 const create = async (req, res) => {
     try {
@@ -63,7 +64,32 @@ const mylist = async (req, res) => {
       res.status(500).json({ error: 'Internal Sennrver Error' });
     }
   };
+
+  // const deleteRide = async (req, res) => {
+  //   const rideId = req.params.rideId;
+  //   console.log('Deleting ride with ID:', rideId);
   
+  //   try {
+  //     // Find the ride by ID
+  //     const ride = await Ride.findById(rideId);
+  //     console.log('Found ride:', ride);
+  
+  //     if (!ride) {
+  //       return res.status(404).json({ message: 'Ride not found' });
+  //     }
+  
+  //     // Delete the ride
+  //     await ride.deleteOne();
+  
+  
+  //     // Return success message
+  //     console.log('hogya delete');
+  //     res.json({ message: 'Ride deleted successfully' });
+  //   } catch (error) {
+  //     console.error('Error deleting ride:', error);
+  //     res.status(500).json({ message: 'Internal Server Error' });
+  //   }
+  // };
   
 
 module.exports = { create,list,mylist };
