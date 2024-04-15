@@ -15,6 +15,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  role:{
+    type:String,
+    default:"passenger"
+  },
+  isVerified:{
+    type:Boolean,
+    default:false
+  },
+  license:{
+    type:String
+  }
 });
 
 const User = mongoose.model('User', userSchema);
