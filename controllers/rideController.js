@@ -31,6 +31,22 @@ const create = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+const getride = async (req, res) => {
+  try {
+    // console.log("here");
+    const rideId = req.params.id; 
+    const ride = await Ride.findById(rideId); 
+
+    if (!ride) {
+        return res.status(404).json({ message: 'Ride not found' }); 
+    }
+
+    res.status(200).json(ride); 
+} catch (error) {
+    console.error('Error retrieving ride:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+}
+}
 
 const list = async (req, res) => {
     try {
@@ -42,7 +58,7 @@ const list = async (req, res) => {
     }
 }
 const mylist = async (req, res) => {
-    console.log("lll");
+    // console.log("lll");
     // const email = req.params.email;
     const email=req.user.id;
     console.log(req.user);
@@ -92,4 +108,4 @@ const mylist = async (req, res) => {
   // };
   
 
-module.exports = { create,list,mylist };
+module.exports = { create,list,mylist,getride };

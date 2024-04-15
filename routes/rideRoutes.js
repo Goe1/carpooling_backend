@@ -10,7 +10,7 @@ const rideController=require(".././controllers/rideController");
 router.post('/create', rideController.create);
 router.get('/list', rideController.list);
 router.get('/mylist',fetchuser,rideController.mylist);
-// router.delete('/:rideId',  rideController.deleteRide);
+router.get('/rides-details/:id',fetchuser,rideController.getride);
 
 // module.exports = router;
 module.exports = router;
