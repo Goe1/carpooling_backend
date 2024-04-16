@@ -63,8 +63,7 @@ const createuser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         globalpassword=hashedPassword;
         globalrole=req.body.role;
-        globallicense=req.body.globallicense;
-
+        globallicense=req.body.license;
       }
     });
   } catch (error) {

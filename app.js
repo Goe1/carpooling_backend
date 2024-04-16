@@ -8,7 +8,7 @@ const io = require("socket.io")(3002);
 
 const authRoutes = require('./routes/authRoutes');
 const rideRoutes = require('./routes/rideRoutes'); // Import rideRoutes
-
+const adminRoutes = require('./routes/admin');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -24,6 +24,7 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 app.use('/auth', authRoutes);
 app.use('/rides', rideRoutes); // Use rideRoutes for '/rides' endpoint
+app.use('/admin',adminRoutes);
 
 const users = {};
 io.on('connection', socket => {
