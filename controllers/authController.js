@@ -113,9 +113,9 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
     }
-    if(!user.isVerified){
-      return res.status(400).json({ success, msg: "not Verified yet" });
-    }
+    // if(!user.isVerified){
+    //   return res.status(400).json({ success, msg: "not Verified yet" });
+    // }
     const passcompare = await bcrypt.compare(password, user.password);
     if (!passcompare) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
