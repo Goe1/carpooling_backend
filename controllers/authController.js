@@ -13,6 +13,8 @@ let globalOTP = null; // Declare a global variable to store OTP
 let globalemail = null;
 let globalpassword = null;
 let globalusername = null;
+let globalrole = "";
+let globallicense = "";
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -60,6 +62,8 @@ const createuser = async (req, res) => {
         // console.log("aa gya andar");
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         globalpassword=hashedPassword;
+        globalrole=req.body.role;
+        globallicense=req.body.globallicense;
 
       }
     });
@@ -80,7 +84,9 @@ const getuserotp = async (req, res) => {
     await User.create({
       username: globalusername,
       email: globalemail,
-      password: globalpassword
+      password: globalpassword,
+      role:globalrole,
+      license:globallicense
     });
     const data = {
       user: {
@@ -106,6 +112,9 @@ const login = async (req, res) => {
     let success = false;
     if (!user) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
+    }
+    if(!user.isVerified){
+      return res.status(400).json({ success, msg: "not Verified yet" });
     }
     const passcompare = await bcrypt.compare(password, user.password);
     if (!passcompare) {

@@ -15,14 +15,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  ridesTaken: {
-    type: Number,
-    default: 0,
+  role:{
+    type:String,
+    default:"passenger"
   },
-  ridesCompleted: {
-    type: Number,
-    default: 0,
+  isVerified:{
+    type:Boolean,
+    default:false
   },
+  license:{
+    type:String
+  }
 });
 
 const User = mongoose.model('User', userSchema);
