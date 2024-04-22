@@ -4,10 +4,6 @@ const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 const dotenv = require('dotenv');
-<<<<<<< HEAD
-const crypto = require('crypto');
-=======
->>>>>>> aef0829762deceecc22f246fbf2f4e714128d099
 
 const authRoutes = require('./routes/authRoutes');
 const rideRoutes = require('./routes/rideRoutes');

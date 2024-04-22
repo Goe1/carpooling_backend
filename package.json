@@ -27,10 +27,6 @@
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-<<<<<<< HEAD
     "web3": "^4.7.0"
-=======
-    "socket.io": "^4.7.5"
->>>>>>> aef0829762deceecc22f246fbf2f4e714128d099
   }
 }
