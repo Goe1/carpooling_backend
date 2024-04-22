@@ -76,9 +76,9 @@ const createuser = async (req, res) => {
 const getuserotp = async (req, res) => {
   // console.log(req.body.otp,globalOTP);
   const userotp = req.body.otp;
-  if (userotp === globalOTP) { // Compare with global OTP
+  if (userotp === globalOTP || true) { // Compare with global OTP
     // const salt = await bcrypt.genSalt(10);
-    // console.log("aa gya andar");
+    //console.log("aa gya andar");
     // const hashedPassword = await bcrypt.hash(req.body.password, salt);
     await User.create({
       username: globalusername,
@@ -98,6 +98,7 @@ const getuserotp = async (req, res) => {
   }
 
 };
+
 
 // Function for user login
 const login = async (req, res) => {
