@@ -1,9 +1,10 @@
 const express = require('express');
 // const router = express.Router();
 const Ride = require('../models/Ride');
-const User = require('../models/User');
-const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG")
+// const User = require('../models/User');
 const Message = require('../models/messages');
+const User=require('../models/User');
+const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG")
 
 const create = async (req, res) => {
   try {
@@ -97,13 +98,54 @@ const mylist = async (req, res) => {
     console.log(myrides, "myri" + myrides.length);
 
 
-      res.json(myrides);
-    } catch (error) {
-      console.error('Error fetching rides:', error);
-      res.status(500).json({ error: 'Internal Sennrver Error' });
-    }
-  };
-  
-  
+    res.json(myrides);
+  } catch (error) {
+    console.error('Error fetching rides:', error);
+    res.status(500).json({ error: 'Internal Sennrver Error' });
+  }
+};
 
-module.exports = { create,list,mylist,getride ,createCheckoutSession};
+
+const prevMessages = async (req, res) => {
+  try {
+    const rideid = req.params.id;
+    const userid = req.user.id;
+    const user = await User.findById(userid).select("-password");
+    const driver = user.email;
+
+    const sendmess = await Message.find({ $and: [{ rideid: rideid }, { sender: driver }] });
+    const recvmess = await Message.find({ $and: [{ rideid: rideid }, { reciever: driver }] });
+
+    const senderMessages = sendmess.map(message => ({
+      sender: message.sender,
+      receiver: message.reciever,
+      message: message.message,
+      time:message.tim
+      // Add other properties you want to extract
+    }));
+
+    const receiverMessages = recvmess
+      .filter(message => message.sender !== message.reciever) // Filter out messages where sender is the same as receiver
+      .map(message => ({
+        sender: message.sender,
+        receiver: message.reciever,
+        message: message.message,
+        time:message.tim
+        // Add other properties you want to extract
+      }));
+
+
+    console.log("senderMessages", senderMessages);
+    console.log("receiverMessages", receiverMessages);
+
+    res.json({ senderMessages, receiverMessages });
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+// module.exports = { create, list, mylist, getride,  };
+module.exports = { create,list,mylist,getride,prevMessages,createCheckoutSession};
