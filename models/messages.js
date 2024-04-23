@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    rideid:{
+    type: String,
+    required: true,
+    },
   message: {
     type: String,
     required: true,
@@ -16,6 +20,10 @@ const userSchema = new mongoose.Schema({
     required: true,
    
   },
+  tim: {
+    type: Date,
+    default: Date.now // Default value is set to the current time
+  }
  
  
 });
