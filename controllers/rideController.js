@@ -2,6 +2,7 @@ const express = require('express');
 // const router = express.Router();
 const Ride = require('../models/Ride');
 const User = require('../models/User');
+const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG")
 const Message = require('../models/messages');
 
 const create = async (req, res) => {
@@ -31,6 +32,33 @@ const create = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
+
+const createCheckoutSession = async (req,res)=>{ 
+  const {start,end,price} = req.body;
+  console.log(price);
+  let str = start + " to " + end;
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types : ["card"],
+    line_items: [
+      {
+        price_data: {
+          currency : "inr",
+          product_data : {
+            name : str
+          },
+          unit_amount : 100
+        },
+        quantity: 1,
+      }
+    ],
+    mode: 'payment',
+    success_url: 'http://localhost:3001/success',
+    cancel_url: 'http://localhost:3001/cancel',
+  });
+  res.json({id:session.id});
+}
+
+
 const getride = async (req, res) => {
   try {
     console.log("here");
@@ -69,53 +97,13 @@ const mylist = async (req, res) => {
     console.log(myrides, "myri" + myrides.length);
 
 
-    res.json(myrides);
-  } catch (error) {
-    console.error('Error fetching rides:', error);
-    res.status(500).json({ error: 'Internal Sennrver Error' });
-  }
-};
+      res.json(myrides);
+    } catch (error) {
+      console.error('Error fetching rides:', error);
+      res.status(500).json({ error: 'Internal Sennrver Error' });
+    }
+  };
+  
+  
 
-
-const prevMessages = async (req, res) => {
-  try {
-    const rideid = req.params.id;
-    const userid = req.user.id;
-    const user = await User.findById(userid).select("-password");
-    const driver = user.email;
-
-    const sendmess = await Message.find({ $and: [{ rideid: rideid }, { sender: driver }] });
-    const recvmess = await Message.find({ $and: [{ rideid: rideid }, { reciever: driver }] });
-
-    const senderMessages = sendmess.map(message => ({
-      sender: message.sender,
-      receiver: message.reciever,
-      message: message.message,
-      time:message.tim
-      // Add other properties you want to extract
-    }));
-
-    const receiverMessages = recvmess
-      .filter(message => message.sender !== message.reciever) // Filter out messages where sender is the same as receiver
-      .map(message => ({
-        sender: message.sender,
-        receiver: message.reciever,
-        message: message.message,
-        time:message.tim
-        // Add other properties you want to extract
-      }));
-
-
-    console.log("senderMessages", senderMessages);
-    console.log("receiverMessages", receiverMessages);
-
-    res.json({ senderMessages, receiverMessages });
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-
-
-module.exports = { create, list, mylist, getride, prevMessages };
+module.exports = { create,list,mylist,getride ,createCheckoutSession};
