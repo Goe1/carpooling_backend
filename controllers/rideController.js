@@ -34,8 +34,9 @@ const create = async (req, res) => {
   }
 }
 
-const createCheckoutSession = async (req,res)=>{ 
-  const {start,end,price} = req.body;
+const createCheckoutSession = async (req, res) => {
+  const idd = req.params.id;
+  const { start, end, price} = req.body;
   console.log(price);
   let str = start + " to " + end;
   const session = await stripe.checkout.sessions.create({
