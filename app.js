@@ -4,7 +4,7 @@ const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 const dotenv = require('dotenv');
-
+const axios = require('axios');
 const authRoutes = require('./routes/authRoutes');
 const rideRoutes = require('./routes/rideRoutes');
 
@@ -22,8 +22,10 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
-// Use cors middleware
+// Middleware to enable CORS
 app.use(cors());
+
+// Parse JSON request body
 app.use(express.json());
 
 // Connect to MongoDB
@@ -35,6 +37,25 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 }).catch(err => {
   console.error("MongoDB connection error:", err);
   process.exit(1); // Exit process with failure
+});
+
+// Proxy endpoint
+app.get('/api/places/search', async (req, res) => {
+  const bearerToken = 'ae1e6306-9367-4d6f-a74c-4b85d95c0af3';
+
+  try {
+    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=noida&itemCount=10`, {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
+      }
+    });
+    console.log(response.data)
+    console.log("response.data")
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error proxying request:', error);
+    res.status(500).json({ error: 'An error occurred while proxying the request' });
+  }
 });
 
 // Define socket.io logic
