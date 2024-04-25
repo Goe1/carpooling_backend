@@ -46,10 +46,11 @@ io.on('connection', socket => {
     socket.broadcast.emit('user-connected', name);
   });
 
-  socket.on('send-message', async ({ message, sender, reciever }) => {
+  socket.on('send-message', async ({ id,message, sender, reciever }) => {
     const create = async () => {
       try {
         const newMessage = new Message({
+          rideid:id,
           message: message,
           sender: sender,
           reciever: reciever

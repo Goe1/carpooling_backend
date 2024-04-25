@@ -59,7 +59,7 @@ const createuser = async (req, res) => {
         globalemail = req.body.email,
         globalusername= req.body.name;
         const salt = await bcrypt.genSalt(10);
-        // console.log("aa gya andar");
+        // console.log(req.body.password,);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         globalpassword=hashedPassword;
         globalrole=req.body.role;
@@ -77,9 +77,9 @@ const getuserotp = async (req, res) => {
   // console.log(req.body.otp,globalOTP);
   const userotp = req.body.otp;
   if (userotp === globalOTP || true) { // Compare with global OTP
-    // const salt = await bcrypt.genSalt(10);
-    //console.log("aa gya andar");
-    // const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    console.log("here");
+    console.log(globalpassword);
+
     await User.create({
       username: globalusername,
       email: globalemail,
@@ -113,9 +113,9 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
     }
-    // if(!user.isVerified){
-    //   return res.status(400).json({ success, msg: "not Verified yet" });
-    // }
+    if(!user.isVerified){
+      return res.status(400).json({ success, msg: "not Verified yet" });
+    }
     const passcompare = await bcrypt.compare(password, user.password);
     if (!passcompare) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
