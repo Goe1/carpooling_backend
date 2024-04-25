@@ -44,21 +44,24 @@ const createCheckoutSession = async (req, res) => {
     line_items: [
       {
         price_data: {
-          currency : "inr",
-          product_data : {
-            name : str
+          currency: "usd",
+          product_data: {
+            name: str
           },
-          unit_amount : 100
+          unit_amount: price * 100
         },
         quantity: 1,
       }
     ],
     mode: 'payment',
-    success_url: 'http://localhost:3001/success',
-    cancel_url: 'http://localhost:3001/cancel',
+    success_url: `http://localhost:3001/success/${idd}`,
+    cancel_url: 'http://localhost:3001/home',
   });
-  res.json({id:session.id});
+  
+  res.json({ id: session.id });
 }
+
+
 
 
 const getride = async (req, res) => {
