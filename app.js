@@ -44,10 +44,10 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = '51143068-f181-4e99-bba4-52059d1891fe';
-
+  const bearerToken = process.env.BEARER_TOKEN;
   try {
-    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=noida&itemCount=10`, {
+    console.log('the request is ',req.query.query)
+    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=10`, {
       headers: {
         Authorization: `Bearer ${bearerToken}`
       }
