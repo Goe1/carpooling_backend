@@ -28,7 +28,7 @@ router.get('/distancematrix', async (req, res) => {
     const apiKey = process.env.API_KEY; // Load API key from environment variables
     
     try {
-        const response = await axios.get(`https://apis.mappls.com/advancedmaps/v1/${apiKey}/distance_matrix/driving/${origins};${destinations}`);
+        const response = await axios.get(`https://apis.mappls.com/advancedmaps/v1/${apiKey}/distance_matrix_eta/driving/${origins};${destinations}`);
         res.json(response.data);
     } catch (error) {
         console.error('Error fetching distance matrix:', error);
