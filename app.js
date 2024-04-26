@@ -41,7 +41,7 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = 'ae1e6306-9367-4d6f-a74c-4b85d95c0af3';
+  const bearerToken = '51143068-f181-4e99-bba4-52059d1891fe';
 
   try {
     const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=noida&itemCount=10`, {
