@@ -44,7 +44,8 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = process.env.BEARER_TOKEN;
+  const bearerToken = "7f1d5157-93f4-454f-8bb4-8fc3387c8707";
+  console.log("here");
   try {
     console.log('the request is ',req.query.query)
     const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=10`, {
@@ -52,7 +53,7 @@ app.get('/api/places/search', async (req, res) => {
         Authorization: `Bearer ${bearerToken}`
       }
     });
-    console.log(response.data)
+    console.log(response)
     console.log("response.data")
     res.json(response.data);
   } catch (error) {
