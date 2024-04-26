@@ -61,8 +61,19 @@ const createCheckoutSession = async (req, res) => {
   res.json({ id: session.id });
 }
 
-
-
+const update = async (req,res)=>{
+  try{
+    const id = req.params.id;
+    const user_id = req.user.id;
+    const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id }, { new: true });
+    if(ress){
+      res.status(200).json(ress);
+    }
+  }catch(error){
+    console.error('Error retrieving ride:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 
 const getride = async (req, res) => {
   try {
@@ -152,4 +163,4 @@ const prevMessages = async (req, res) => {
 
 
 // module.exports = { create, list, mylist, getride,  };
-module.exports = { create,list,mylist,getride,prevMessages,createCheckoutSession};
+module.exports = { create,list,mylist,getride,prevMessages,createCheckoutSession,update};

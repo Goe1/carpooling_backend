@@ -13,6 +13,7 @@ router.get('/list', rideController.list);
 router.get('/mylist',fetchuser,rideController.mylist);
 router.get('/prevmessages/:id',fetchuser,rideController.prevMessages);
 router.get('/rides-details/:id',fetchuser,rideController.getride);
+router.post('/update/:id',fetchuser,rideController.update);
 
 // module.exports = router;
 module.exports = router;

@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema({
   },
   license:{
     type:String
+  },
+  booked: {
+    type: Boolean,
+    default : false
+  },
+  ride_id:{
+    type:String,
+    default:""
   }
 });
 
