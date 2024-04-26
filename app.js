@@ -30,7 +30,6 @@ app.use(cors());
 // Parse JSON request body
 app.use(express.json());
 
-app.use('/api/map', mapRoutes);
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/carpooling-app', {
   useNewUrlParser: true,
@@ -44,8 +43,8 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = '51143068-f181-4e99-bba4-52059d1891fe';
-
+  const bearerToken = "7f1d5157-93f4-454f-8bb4-8fc3387c8707";
+  console.log("here");
   try {
     console.log('the request is ',req.query.query)
     const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=10`, {
@@ -58,8 +57,8 @@ app.get('/api/places/search', async (req, res) => {
     res.json(response.data);
   } catch (error) {
     console.error('Error proxying request:', error);
-    res.status(500).json({ error: 'An error occurred while proxying the request' });
-  }
+    res.status(500).json({ error: 'An error occurred while proxying the request' });
+  }
 });
 
 // Define socket.io logic
@@ -103,6 +102,7 @@ io.on('connection', socket => {
 // Define routes
 app.use('/auth', authRoutes);
 app.use('/rides', rideRoutes);
+app.use('/api/map', mapRoutes);
 
 // Drop the 'reciever' index only if it exists
 Message.collection.dropIndex({ reciever: 1 }, function(err, result) {

@@ -8,16 +8,18 @@ const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hw
 
 const create = async (req, res) => {
   try {
-    const { startingLocation, destination, date, availableSeats, userEmail, license, starttime, endtime, name } = req.body;
+    const { startingLocation, destinations, date, availableSeats, userEmail, license, starttime, endtime, name } = req.body;
     console.log(req.body);
     //const { formDataWithLicense } = req.files;
     //console.log(formDataWithLicense);
     console.log("license");
 
+    console.log('ye dest hai -> ',destinations)
+
     const ride = new Ride({
       driver: userEmail,
       startingLocation,
-      destination,
+      destinations,
       date,
       availableSeats,
       applicants: name,
