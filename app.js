@@ -47,7 +47,7 @@ app.get('/api/places/search', async (req, res) => {
   console.log("here");
   try {
     console.log('the request is ',req.query.query)
-    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=5`, {
+    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=10`, {
       headers: {
         Authorization: `Bearer ${bearerToken}`
       }
@@ -57,8 +57,8 @@ app.get('/api/places/search', async (req, res) => {
     res.json(response.data);
   } catch (error) {
     console.error('Error proxying request:', error);
-    res.status(500).json({ error: 'An error occurred while proxying the request' });
-  }
+    res.status(500).json({ error: 'An error occurred while proxying the request' });
+  }
 });
 
 // Define socket.io logic

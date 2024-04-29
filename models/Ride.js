@@ -9,10 +9,12 @@ const rideSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  destination: {
-    type: String,
-    required: true,
-  },
+  destinations: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   date: {
     type: Date,
     required: true,
