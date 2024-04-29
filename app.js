@@ -43,23 +43,26 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = "7f1d5157-93f4-454f-8bb4-8fc3387c8707";
-  console.log("here");
+  const bearerToken = "a0703a07-023b-4f47-a783-d8111dfc81ee";
+  console.log("Received search request for:", req.query.query);
   try {
-    console.log('the request is ',req.query.query)
-    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=10`, {
+    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json`, {
+      params: {
+        query: req.query.query,
+        itemCount: 5
+      },
       headers: {
         Authorization: `Bearer ${bearerToken}`
       }
     });
-    console.log(response)
-    console.log("response.data")
+    console.log("Received response:", response.data);
     res.json(response.data);
   } catch (error) {
     console.error('Error proxying request:', error);
-    res.status(500).json({ error: 'An error occurred while proxying the request' });
-  }
+    res.status(500).json({ error: 'An error occurred while proxying the request' });
+  }
 });
+
 
 // Define socket.io logic
 const users = {};
