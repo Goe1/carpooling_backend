@@ -15,25 +15,29 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  role:{
-    type:String,
-    default:"passenger"
+  role: {
+    type: String,
+    default: "passenger",
   },
-  isVerified:{
-    type:Boolean,
-    default:false
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
-  license:{
-    type:String
+  license: {
+    type: String,
   },
   booked: {
     type: Boolean,
-    default : false
+    default: false,
   },
-  ride_id:{
-    type:String,
-    default:""
-  }
+  ride_id: {
+    type: String,
+    default: "",
+  },
+  hasCreatedRide: {
+    type: Boolean,
+    default: false,
+  }, // New field to track if the user has created a ride
 });
 
 const User = mongoose.model('User', userSchema);
