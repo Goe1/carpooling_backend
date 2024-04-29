@@ -43,7 +43,7 @@ mongoose.connect('mongodb://localhost:27017/carpooling-app', {
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = "7f1d5157-93f4-454f-8bb4-8fc3387c8707";
+  const bearerToken = "a0703a07-023b-4f47-a783-d8111dfc81ee";
   console.log("here");
   try {
     console.log('the request is ',req.query.query)
