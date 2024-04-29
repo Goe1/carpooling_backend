@@ -28,7 +28,7 @@ const rideSchema = new mongoose.Schema({
   },
   applicants: [
     {
-      type: String, // Assuming email is used as a unique identifier for applicants
+      type: String, // Assuming _id
     },
   ],
   departureTime: { 

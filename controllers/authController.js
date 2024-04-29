@@ -1,12 +1,12 @@
-const otpGenerator = require('otp-generator');
-const express = require('express');
+const otpGenerator = require("otp-generator");
+const express = require("express");
 const router = express.Router();
-const User = require('../models/User');
-const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const User = require("../models/User");
+const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const JWT_SECRET = "kalprateek@2692";
 let globalOTP = null; // Declare a global variable to store OTP
@@ -38,9 +38,14 @@ const createuser = async (req, res) => {
   try {
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).json({ success, msg: 'User already exists' });
+      return res.status(400).json({ success, msg: "User already exists" });
     }
-    globalOTP = otpGenerator.generate(6, { digits: true, alphabets: true, upperCase: false, specialChars: false }); // Set the global OTP
+    globalOTP = otpGenerator.generate(6, {
+      digits: true,
+      alphabets: true,
+      upperCase: false,
+      specialChars: false,
+    }); // Set the global OTP
 
     // Generate OTP
     const mailOptions = {
@@ -56,14 +61,13 @@ const createuser = async (req, res) => {
         return res.status(500).send("Error sending OTP via email");
       } else {
         console.log("Email sent: " + info.response);
-        globalemail = req.body.email,
-        globalusername= req.body.name;
+        (globalemail = req.body.email), (globalusername = req.body.name);
         const salt = await bcrypt.genSalt(10);
         // console.log(req.body.password,);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
-        globalpassword=hashedPassword;
-        globalrole=req.body.role;
-        globallicense=req.body.license;
+        globalpassword = hashedPassword;
+        globalrole = req.body.role;
+        globallicense = req.body.license;
       }
     });
   } catch (error) {
@@ -76,7 +80,8 @@ const createuser = async (req, res) => {
 const getuserotp = async (req, res) => {
   // console.log(req.body.otp,globalOTP);
   const userotp = req.body.otp;
-  if (userotp === globalOTP || true) { // Compare with global OTP
+  if (userotp === globalOTP || true) {
+    // Compare with global OTP
     console.log("here");
     console.log(globalpassword);
 
@@ -84,21 +89,19 @@ const getuserotp = async (req, res) => {
       username: globalusername,
       email: globalemail,
       password: globalpassword,
-      role:globalrole,
-      license:globallicense
+      role: globalrole,
+      license: globallicense,
     });
     const data = {
       user: {
         id: User._id,
-      }
+      },
     };
     const authToken = jwt.sign(data, JWT_SECRET);
     success = true;
     res.json({ success, authToken });
   }
-
 };
-
 
 // Function for user login
 const login = async (req, res) => {
@@ -113,7 +116,7 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
     }
-    if(!user.isVerified){
+    if (!user.isVerified) {
       return res.status(400).json({ success, msg: "not Verified yet" });
     }
     const passcompare = await bcrypt.compare(password, user.password);
@@ -123,7 +126,7 @@ const login = async (req, res) => {
     const data = {
       user: {
         id: user._id,
-      }
+      },
     };
     const authToken = jwt.sign(data, JWT_SECRET);
     success = true;
@@ -134,18 +137,16 @@ const login = async (req, res) => {
   }
 };
 
-const getuser=async(req,res)=>{
+const getuser = async (req, res) => {
   try {
-    const userId=req.user.id;
-    const user=await User.findById(userId).select("-password");
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
     console.log(user);
     return res.json(user);
-} catch (error) {
+  } catch (error) {
     //console.log(error);
-   return  res.status(500).send("Error Occured");
-}
+    return res.status(500).send("Error Occured");
+  }
+};
 
-
-}
-
-module.exports = { createuser, login, getuserotp,getuser };
+module.exports = { createuser, login, getuserotp, getuser };
