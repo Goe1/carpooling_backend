@@ -4,6 +4,7 @@ const Ride = require('../models/Ride');
 // const User = require('../models/User');
 const Message = require('../models/messages');
 const User=require('../models/User');
+const { use } = require('passport');
 const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG")
 
 const create = async (req, res) => {
@@ -69,7 +70,25 @@ const update = async (req,res)=>{
     const user_id = req.user.id;
     const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id }, { new: true });
     if(ress){
-      res.status(200).json(ress);
+      res.status(200).json("ok");
+    }
+  }catch(error){
+    console.error('Error retrieving ride:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+const addapplicant = async (req,res)=>{
+  console.log("kokdoiswuoiewi");
+  const id = req.params.id;
+  const user_id = req.user.id;
+  try{
+    console.log(user_id);
+    const ress = await Ride.findOneAndUpdate({_id:id} ,{ $push: { applicants: user_id } },{ new: true });
+    console.log("addapplicant");
+    //console.log(ress);
+    if(ress){
+      res.status(200).json("ok");
     }
   }catch(error){
     console.error('Error retrieving ride:', error);
@@ -165,4 +184,4 @@ const prevMessages = async (req, res) => {
 
 
 // module.exports = { create, list, mylist, getride,  };
-module.exports = { create,list,mylist,getride,prevMessages,createCheckoutSession,update};
+module.exports = { create,list,mylist,getride,prevMessages,createCheckoutSession,update,addapplicant};
