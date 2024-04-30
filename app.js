@@ -46,7 +46,7 @@ mongoose
 
 // Proxy endpoint
 app.get("/api/places/search", async (req, res) => {
-  const bearerToken = "7f1d5157-93f4-454f-8bb4-8fc3387c8707";
+  const bearerToken = "9f726b47-2eb2-4b38-b8ea-1bffca7426f4";
   console.log("here");
   try {
     console.log("the request is ", req.query.query);
