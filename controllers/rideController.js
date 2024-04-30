@@ -45,7 +45,8 @@ const create = async (req, res) => {
       try {
         const response = await axios.get(`http://localhost:3000/api/map/distancematrix?origins=${positions[0][1]},${positions[0][0]}&destinations=${positions[i][1]},${positions[i][0]}`);
         const idd = generateRandomId();
-        price.push({ destinationId: addresses[i], price: (response.data.results.distances[0][1] / 100) * 2.5 });
+        console.log(response.data.results.distances[0][1]);
+        price.push({ destinationId: addresses[i], price: parseInt((response.data.results.distances[0][1] / 8000) * 0.60 )});
       } catch (error) {
         console.error('Error fetching distance matrix:', error);
         return res.status(500).json({ error: 'An error occurred while fetching distance matrix' });
