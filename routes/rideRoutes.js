@@ -15,7 +15,7 @@ router.get('/prevmessages/:id',fetchuser,rideController.prevMessages);
 router.get('/rides-details/:id',fetchuser,rideController.getride);
 router.get('/getuserr/:id',fetchuser,rideController.getuserr);
 router.post('/addapplicant/:id',fetchuser,rideController.addapplicant);
-router.post('/update/:id/:otp',fetchuser,rideController.update);
+router.post('/update/:id/:start/:end/:otp',fetchuser,rideController.update);
 
 // module.exports = router;
 module.exports = router;
