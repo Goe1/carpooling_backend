@@ -23,25 +23,33 @@ const rideSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  price: {
-    type: Number,
-  },
+  price: [
+    {
+      destinationId: {
+        type: String, 
+      },
+      price: {
+        type: Number,
+      },
+    }
+  ],
+
   applicants: [
     {
-      type: String, // Assuming _id
+      type: String,
     },
   ],
-  departureTime: { 
-    type: String, 
-    required: true 
+  departureTime: {
+    type: String,
+    required: true
   },
-  estimatedArrivalTime: { 
-    type: String, 
-    required: true 
+  estimatedArrivalTime: {
+    type: String,
+    required: true
   },
-  // Add field for PDF document
+
   license: {
-    type:String
+    type: String
   }
 });
 

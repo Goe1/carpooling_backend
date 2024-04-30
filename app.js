@@ -45,19 +45,25 @@ mongoose
   });
 
 // Proxy endpoint
+<<<<<<< HEAD
 app.get("/api/places/search", async (req, res) => {
   const bearerToken = "9f726b47-2eb2-4b38-b8ea-1bffca7426f4";
   console.log("here");
+=======
+app.get('/api/places/search', async (req, res) => {
+  const bearerToken = "9f726b47-2eb2-4b38-b8ea-1bffca7426f4";
+  console.log("Received search request for:", req.query.query);
+>>>>>>> 7ffec0f750700cf5bace352f3d18612e93b44785
   try {
-    console.log("the request is ", req.query.query);
-    const response = await axios.get(
-      `https://atlas.mapmyindia.com/api/places/search/json?query=${req.query.query}&itemCount=10`,
-      {
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-        },
+    const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json`, {
+      params: {
+        query: req.query.query,
+        itemCount: 5
+      },
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
       }
-    );
+  });
     console.log(response.data);
     console.log("response.data");
     res.json(response.data);
@@ -68,6 +74,7 @@ app.get("/api/places/search", async (req, res) => {
       .json({ error: "An error occurred while proxying the request" });
   }
 });
+
 
 // Define socket.io logic
 const users = {};

@@ -1,22 +1,56 @@
 const express = require('express');
-// const router = express.Router();
 const Ride = require('../models/Ride');
-// const User = require('../models/User');
 const Message = require('../models/messages');
-const User=require('../models/User');
-const { use } = require('passport');
-const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG")
+const User = require('../models/User');
+const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG");
+const axios = require("axios");
+function generateRandomId() {
+  return 'id_' + Math.random().toString(36).substr(2, 9); // Generate a random alphanumeric string
+}
 
 const create = async (req, res) => {
   try {
     const { startingLocation, destinations, date, availableSeats, userEmail, license, starttime, endtime, name } = req.body;
-    console.log(req.body);
-    //const { formDataWithLicense } = req.files;
-    //console.log(formDataWithLicense);
-    console.log("license");
-
-    console.log('ye dest hai -> ',destinations)
-
+    console.log('ye dest hai -> ', destinations);
+    const positions = [];
+    const addresses = [startingLocation, ...destinations];
+    const generateMarkerData = async () => {
+      try {
+        for (const address of addresses) {
+          try {
+            const response = await axios.get(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+                address
+              )}`
+            );
+            const data = response.data;
+            if (data.length > 0) {
+              const { lat, lon } = data[0];
+              positions.push([parseFloat(lat), parseFloat(lon)]);
+            } else {
+              console.error(`No coordinates found for address: ${address}`);
+            }
+          } catch (error) {
+            console.error(`Error geocoding address: ${address}`, error);
+          }
+        }
+      } catch (error) {
+        console.error("Error generating marker data:", error);
+      }
+    };
+    await generateMarkerData();
+    
+    const price = [];
+    for (let i = 0; i < positions.length; i++) {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/map/distancematrix?origins=${positions[0][1]},${positions[0][0]}&destinations=${positions[i][1]},${positions[i][0]}`);
+        const idd = generateRandomId();
+        price.push({ destinationId: addresses[i], price: (response.data.results.distances[0][1] / 100) * 2.5 });
+      } catch (error) {
+        console.error('Error fetching distance matrix:', error);
+        return res.status(500).json({ error: 'An error occurred while fetching distance matrix' });
+      }
+    }
     const ride = new Ride({
       driver: userEmail,
       startingLocation,
@@ -26,79 +60,85 @@ const create = async (req, res) => {
       applicants: name,
       departureTime: endtime,
       estimatedArrivalTime: starttime,
-      license: license
+      license,
+      price: price
     });
-    // console.log('karre hai save')
     await ride.save();
     res.json({ message: 'Ride created successfully', ride });
   } catch (error) {
     console.error('Error creating ride:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+};
+
 
 const createCheckoutSession = async (req, res) => {
-  const idd = req.params.id;
-  const { start, end, price} = req.body;
-  console.log(price);
-  let str = start + " to " + end;
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: str
+  try {
+    const idd = req.params.id;
+    const { start, end, price } = req.body;
+    console.log(price);
+    let str = start + " to " + end;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: str
+            },
+            unit_amount: price * 100
           },
-          unit_amount: price * 100
-        },
-        quantity: 1,
-      }
-    ],
-    mode: 'payment',
-    success_url: `http://localhost:3001/success/${idd}`,
-    cancel_url: 'http://localhost:3001/home',
-  });
-  
-  res.json({ id: session.id });
-}
+          quantity: 1,
+        }
+      ],
+      mode: 'payment',
+      success_url: `http://localhost:3001/success/${idd}`,
+      cancel_url: 'http://localhost:3001/home',
+    });
 
-const update = async (req,res)=>{
-  try{
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const update = async (req, res) => {
+  try {
     const id = req.params.id;
     const user_id = req.user.id;
     const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id }, { new: true });
-    if(ress){
+    if (ress) {
       res.status(200).json("ok");
     }
-  }catch(error){
-    console.error('Error retrieving ride:', error);
+  } catch (error) {
+    console.error('Error updating ride:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+};
 
-const addapplicant = async (req,res)=>{
+const addapplicant = async (req, res) => {
   console.log("kokdoiswuoiewi");
   const id = req.params.id;
   const user_id = req.user.id;
-  try{
+  try {
     console.log(user_id);
-    const ress = await Ride.findOneAndUpdate({_id:id} ,{ $push: { applicants: user_id } },{ new: true });
+    const ress = await Ride.findOneAndUpdate({ _id: id }, { $push: { applicants: user_id } }, { new: true });
     console.log("addapplicant");
     //console.log(ress);
-    if(ress){
+    if (ress) {
       res.status(200).json("ok");
     }
-  }catch(error){
-    console.error('Error retrieving ride:', error);
+  } catch (error) {
+    console.error('Error adding applicant:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+};
 
 const getride = async (req, res) => {
   try {
-    console.log("here");
+    // console.log("here");
     const rideId = req.params.id;
     const ride = await Ride.findById(rideId);
 
@@ -111,36 +151,33 @@ const getride = async (req, res) => {
     console.error('Error retrieving ride:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+};
 
 const list = async (req, res) => {
   try {
     const rides = await Ride.find();
     res.json(rides);
   } catch (error) {
-    console.error(error);
+    console.error('Error listing rides:', error);
     res.status(500).json({ error: 'Internal Server Error' });
-  }
-}
-const mylist = async (req, res) => {
-  // console.log("lll");
-  // const email = req.params.email;
-  const email = req.user.id;
-  console.log(req.user);
-  try {
-    const rides = await User.find({ _id: email });
-    const eemail = rides[0].email;
-    const myrides = await Ride.find({ driver: eemail });
-    console.log(myrides, "myri" + myrides.length);
-
-
-    res.json(myrides);
-  } catch (error) {
-    console.error('Error fetching rides:', error);
-    res.status(500).json({ error: 'Internal Sennrver Error' });
   }
 };
 
+const mylist = async (req, res) => {
+  try {
+    const email = req.user.id;
+    // console.log(req.user);
+    const rides = await User.find({ _id: email });
+    const eemail = rides[0].email;
+    const myrides = await Ride.find({ driver: eemail });
+    // console.log(myrides, "myri" + myrides.length);
+
+    res.json(myrides);
+  } catch (error) {
+    console.error('Error fetching user rides:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 const prevMessages = async (req, res) => {
   try {
@@ -156,23 +193,20 @@ const prevMessages = async (req, res) => {
       sender: message.sender,
       receiver: message.reciever,
       message: message.message,
-      time:message.tim
-      // Add other properties you want to extract
+      time: message.tim
     }));
 
     const receiverMessages = recvmess
-      .filter(message => message.sender !== message.reciever) // Filter out messages where sender is the same as receiver
+      .filter(message => message.sender !== message.reciever)
       .map(message => ({
         sender: message.sender,
         receiver: message.reciever,
         message: message.message,
-        time:message.tim
-        // Add other properties you want to extract
+        time: message.tim
       }));
 
-
-    console.log("senderMessages", senderMessages);
-    console.log("receiverMessages", receiverMessages);
+    // console.log("senderMessages", senderMessages);
+    // console.log("receiverMessages", receiverMessages);
 
     res.json({ senderMessages, receiverMessages });
   } catch (error) {
@@ -181,7 +215,4 @@ const prevMessages = async (req, res) => {
   }
 };
 
-
-
-// module.exports = { create, list, mylist, getride,  };
-module.exports = { create,list,mylist,getride,prevMessages,createCheckoutSession,update,addapplicant};
+module.exports = { create, list, mylist, getride, prevMessages, createCheckoutSession, update, addapplicant };
