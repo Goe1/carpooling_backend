@@ -11,58 +11,58 @@ function generateRandomId() {
 const create = async (req, res) => {
   try {
     const { startingLocation, destinations, date, availableSeats, userEmail, license, starttime, endtime, name } = req.body;
-    console.log('ye dest hai -> ', destinations);
-    const positions = [];
+   
+    // const positions = [];
     const addresses = [startingLocation, ...destinations];
-    const generateMarkerData = async () => {
-      try {
-        for (const address of addresses) {
-          try {
-            const response = await axios.get(
-              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-                address
-              )}`
-            );
-            const data = response.data;
-            if (data.length > 0) {
-              const { lat, lon } = data[0];
-              positions.push([parseFloat(lat), parseFloat(lon)]);
-            } else {
-              console.error(`No coordinates found for address: ${address}`);
-            }
-          } catch (error) {
-            console.error(`Error geocoding address: ${address}`, error);
-          }
-        }
-      } catch (error) {
-        console.error("Error generating marker data:", error);
-      }
-    };
-    await generateMarkerData();
+    // const generateMarkerData = async () => {
+    //   try {
+    //     for (const address of addresses) {
+    //       try {
+    //         const response = await axios.get(
+    //           `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    //             address
+    //           )}`
+    //         );
+    //         const data = response.data;
+    //         if (data.length > 0) {
+    //           const { lat, lon } = data[0];
+    //           positions.push([parseFloat(lat), parseFloat(lon)]);
+    //         } else {
+    //           console.error(`No coordinates found for address: ${address}`);
+    //         }
+    //       } catch (error) {
+    //         console.error(`Error geocoding address: ${address}`, error);
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error("Error generating marker data:", error);
+    //   }
+    // };
+    // await generateMarkerData();
     
-    const price = [];
-    for (let i = 0; i < positions.length; i++) {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/map/distancematrix?origins=${positions[0][1]},${positions[0][0]}&destinations=${positions[i][1]},${positions[i][0]}`);
-        const idd = generateRandomId();
-        console.log(response.data.results.distances[0][1]);
-        price.push({ destinationId: addresses[i], price: parseInt((response.data.results.distances[0][1] / 8000) * 0.60 )});
-      } catch (error) {
-        console.error('Error fetching distance matrix:', error);
-        return res.status(500).json({ error: 'An error occurred while fetching distance matrix' });
-      }
-    }
+    // const price = [];
+    // for (let i = 0; i < positions.length; i++) {
+    //   try {
+    //     const response = await axios.get(`http://localhost:3000/api/map/distancematrix?origins=${positions[0][1]},${positions[0][0]}&destinations=${positions[i][1]},${positions[i][0]}`);
+    //     const idd = generateRandomId();
+    //     console.log(response.data.results.distances[0][1]);
+    //     price.push({ destinationId: addresses[i], price: parseInt((response.data.results.distances[0][1] / 8000) * 0.60 )});
+    //   } catch (error) {
+    //     console.error('Error fetching distance matrix:', error);
+    //     return res.status(500).json({ error: 'An error occurred while fetching distance matrix' });
+    //   }
+    // }
     const ride = new Ride({
       driver: userEmail,
       startingLocation,
-      destinations,
+      destinations:addresses,
       date,
       availableSeats,
       applicants: name,
       departureTime: endtime,
       estimatedArrivalTime: starttime,
       license,
-      price: price
+      // price: price
     });
     await ride.save();
     res.json({ message: 'Ride created successfully', ride });
