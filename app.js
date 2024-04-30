@@ -46,7 +46,7 @@ mongoose
 
 // Proxy endpoint
 app.get('/api/places/search', async (req, res) => {
-  const bearerToken = "a0703a07-023b-4f47-a783-d8111dfc81ee";
+  const bearerToken = "9f726b47-2eb2-4b38-b8ea-1bffca7426f4";
   console.log("Received search request for:", req.query.query);
   try {
     const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json`, {
@@ -57,7 +57,7 @@ app.get('/api/places/search', async (req, res) => {
       headers: {
         Authorization: `Bearer ${bearerToken}`
       }
-    );
+  });
     console.log(response.data);
     console.log("response.data");
     res.json(response.data);
