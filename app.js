@@ -45,9 +45,9 @@ mongoose
   });
 
 // Proxy endpoint
-app.get('/api/places/search', async (req, res) => {
+app.get("/api/places/search", async (req, res) => {
   const bearerToken = "9f726b47-2eb2-4b38-b8ea-1bffca7426f4";
-  console.log("Received search request for:", req.query.query);
+  console.log("here");
   try {
     const response = await axios.get(`https://atlas.mapmyindia.com/api/places/search/json`, {
       params: {
