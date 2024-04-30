@@ -120,8 +120,9 @@ const getuserr = async (req, res) => {
 const update = async (req, res) => {
   try {
     const id = req.params.id;
+    const otpp = req.params.otp;
     const user_id = req.user.id;
-    const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id }, { new: true });
+    const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id,otp:otpp }, { new: true });
     if (ress) {
       res.status(200).json("ok");
     }
