@@ -94,7 +94,7 @@ const createCheckoutSession = async (req, res) => {
         }
       ],
       mode: 'payment',
-      success_url: `http://localhost:3001/success/${idd}`,
+      success_url: `http://localhost:3001/success/${idd}/${encodeURIComponent(start)}/${encodeURIComponent(end)}`,
       cancel_url: 'http://localhost:3001/home',
     });
 
@@ -104,6 +104,7 @@ const createCheckoutSession = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const update = async (req, res) => {
   try {
