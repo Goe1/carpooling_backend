@@ -105,6 +105,17 @@ const createCheckoutSession = async (req, res) => {
   }
 };
 
+const getuserr = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const ress = await User.find({_id:id});
+    res.json(ress);
+  } catch (error) {
+    console.error('Error updating ride:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 
 const update = async (req, res) => {
   try {
@@ -123,7 +134,8 @@ const update = async (req, res) => {
 const addapplicant = async (req, res) => {
   console.log("kokdoiswuoiewi");
   const id = req.params.id;
-  const user_id = req.user.id;
+  console.log(req.user.email);
+  const user_id = req.user.email;
   try {
     console.log(user_id);
     const ress = await Ride.findOneAndUpdate({ _id: id }, { $push: { applicants: user_id } }, { new: true });
@@ -217,4 +229,4 @@ const prevMessages = async (req, res) => {
   }
 };
 
-module.exports = { create, list, mylist, getride, prevMessages, createCheckoutSession, update, addapplicant };
+module.exports = { create, list, mylist, getride, prevMessages, createCheckoutSession, update, addapplicant,getuserr };
