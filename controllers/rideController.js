@@ -119,10 +119,17 @@ const getuserr = async (req, res) => {
 
 const update = async (req, res) => {
   try {
+    console.log("updatee");
     const id = req.params.id;
+    const start = req.params.start;
+    const end = req.params.end;
     const otpp = req.params.otp;
     const user_id = req.user.id;
-    const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id,otp:otpp }, { new: true });
+    console.log(id);
+    console.log(start);
+    console.log(end);
+    console.log(otpp);
+    const ress = await User.findByIdAndUpdate(user_id, { booked: true, ride_id: id,otp:otpp,start:start,end:end }, { new: true });
     if (ress) {
       res.status(200).json("ok");
     }

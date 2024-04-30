@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema({
     type:Number,
     default:0
   },
+  start:{
+    type:String,
+    default:""
+  },
+  end:{
+    type:String,
+    default:""
+  },
   ride_id: {
     type: String,
     default: "",
