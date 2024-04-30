@@ -32,6 +32,7 @@ router.get('/getusers', async (req, res) => {
 });
 
 router.get('/getuser', fetchuser, authController.getuser);
+router.get('/getuserr/:id', fetchuser, authController.getuserr);
 
 
 // router.delete('/:userId',fetchuser, authController.deleteUser);

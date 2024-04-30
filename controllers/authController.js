@@ -149,4 +149,16 @@ const getuser = async (req, res) => {
   }
 };
 
-module.exports = { createuser, login, getuserotp, getuser };
+const getuserr = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    // console.log(user);
+    return res.json(user);
+  } catch (error) {
+    //console.log(error);
+    return res.status(500).send("Error Occured");
+  }
+};
+
+module.exports = { createuser, login, getuserotp, getuser,getuserr };
