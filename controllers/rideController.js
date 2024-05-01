@@ -118,7 +118,7 @@ const getuserr = async (req, res) => {
 const complete = async (req, res) => {
   try {
     const id = req.params.id;
-    const ress = await Ride.findByIdAndUpdate(id, { complete:true }, { new: true });
+    const ress = await Ride.findByIdAndUpdate(id, { completed:true }, { new: true });
     res.json(ress);
   } catch (error) {
     console.error('Error updating ride:', error);
