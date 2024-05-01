@@ -106,6 +106,7 @@ const getuserotp = async (req, res) => {
 // Function for user login
 const login = async (req, res) => {
   const errors = validationResult(req);
+  
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -119,7 +120,10 @@ const login = async (req, res) => {
     if (!user.isVerified) {
       return res.status(400).json({ success, msg: "not Verified yet" });
     }
+    console.log(password)
+    console.log(user.password)
     const passcompare = await bcrypt.compare(password, user.password);
+    console.log(passcompare)
     if (!passcompare) {
       return res.status(400).json({ success, msg: "Invalid Credentials" });
     }
