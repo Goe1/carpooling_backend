@@ -11,7 +11,7 @@ router.post('/create', rideController.create);
 router.post('/create-checkout-session/:id', rideController.createCheckoutSession);
 router.get('/list', rideController.list);
 router.get('/mylist',fetchuser,rideController.mylist);
-router.get('/prevmessages/:id',fetchuser,rideController.prevMessages);
+router.get('/prevmessages/:id/:remail',fetchuser,rideController.prevMessages);
 router.get('/rides-details/:id',fetchuser,rideController.getride);
 router.get('/getuserr/:id',fetchuser,rideController.getuserr);
 router.post('/addapplicant/:id',fetchuser,rideController.addapplicant);

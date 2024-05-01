@@ -202,20 +202,28 @@ const mylist = async (req, res) => {
 };
 
 const prevMessages = async (req, res) => {
+  console.log("aauuuuuu");
   try {
     const rideid = req.params.id;
+    const reciverwale=req.params.remail;
+    console.log(reciverwale);
+    console.log("reciverwale");
     const userid = req.user.id;
     const user = await User.findById(userid).select("-password");
     const driver = user.email;
 
-    const sendmess = await Message.find({ $and: [{ rideid: rideid }, { sender: driver }] });
-    const recvmess = await Message.find({ $and: [{ rideid: rideid }, { reciever: driver }] });
+    const sendmess = await Message.find({ $and: [{ rideid: rideid }, { sender: driver, reciever: reciverwale }] });
+    const recvmess = await Message.find({ $and: [{ rideid: rideid }, { sender: reciverwale, reciever: driver }] });
+    
+    // const recvmess = await Message.find({ $and: [{ rideid: rideid }, { reciever: driver }] });
 
     const senderMessages = sendmess.map(message => ({
       sender: message.sender,
       receiver: message.reciever,
       message: message.message,
-      time: message.tim
+      time: message.tim,
+      sendermail:driver,
+      recieverwale:message.reciever
     }));
 
     const receiverMessages = recvmess
@@ -224,12 +232,15 @@ const prevMessages = async (req, res) => {
         sender: message.sender,
         receiver: message.reciever,
         message: message.message,
-        time: message.tim
+        time: message.tim,
+        sendermail:message.sender,
+        recieverwale:driver
       }));
-
-    // console.log("senderMessages", senderMessages);
-    // console.log("receiverMessages", receiverMessages);
-
+      console.log("receiverMessages")
+      console.log(receiverMessages)
+      console.log("senderMessages")
+      console.log(senderMessages)
+    
     res.json({ senderMessages, receiverMessages });
   } catch (error) {
     console.error('Error fetching messages:', error);
