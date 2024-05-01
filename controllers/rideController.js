@@ -58,7 +58,6 @@ const create = async (req, res) => {
       destinations:addresses,
       date,
       availableSeats,
-      applicants: name,
       departureTime: endtime,
       estimatedArrivalTime: starttime,
       license,
@@ -116,6 +115,17 @@ const getuserr = async (req, res) => {
   }
 };
 
+const complete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const ress = await Ride.findByIdAndUpdate(id, { complete:true }, { new: true });
+    res.json(ress);
+  } catch (error) {
+    console.error('Error updating ride:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 
 const update = async (req, res) => {
   try {
@@ -142,11 +152,15 @@ const update = async (req, res) => {
 const addapplicant = async (req, res) => {
   console.log("kokdoiswuoiewi");
   const id = req.params.id;
-  console.log(req.user.email);
-  const user_id = req.user.email;
+  console.log(req.user.id);
+  const user_id = req.user.id;
   try {
     console.log(user_id);
-    const ress = await Ride.findOneAndUpdate({ _id: id }, { $push: { applicants: user_id } }, { new: true });
+    const ress2 = await Ride.find({ _id: id });
+    // const avai = parseInt(ress2.availableSeats) - 1;
+    // console.log(avai);
+    //$set: { availableSeats: avai } 
+    const ress = await Ride.findOneAndUpdate({ _id: id }, { $push: { applicants: user_id }}, { new: true });
     console.log("addapplicant");
     //console.log(ress);
     if (ress) {
@@ -177,7 +191,7 @@ const getride = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    const rides = await Ride.find();
+    const rides = await Ride.find({completed:false});
     res.json(rides);
   } catch (error) {
     console.error('Error listing rides:', error);
@@ -237,4 +251,4 @@ const prevMessages = async (req, res) => {
   }
 };
 
-module.exports = { create, list, mylist, getride, prevMessages, createCheckoutSession, update, addapplicant,getuserr };
+module.exports = { create, list, mylist, getride, prevMessages, createCheckoutSession, update, addapplicant,getuserr,complete };
