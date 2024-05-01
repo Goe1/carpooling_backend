@@ -30,8 +30,30 @@ router.get('/getusers', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+router.get('/updateUser/:email', async (req, res) => {
+    const email = req.params.email;
+
+    try {
+        // Find the user by email and update the hasBooked field to false
+        const updatedUser = await User.findOneAndUpdate(
+            { email: email },
+            { $set: { booked: false } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 router.get('/getuser', fetchuser, authController.getuser);
+router.get('/getuserr/:id', fetchuser, authController.getuserr);
 
 
 // router.delete('/:userId',fetchuser, authController.deleteUser);
